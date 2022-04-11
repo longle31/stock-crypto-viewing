@@ -1,10 +1,11 @@
-import Api from './api'
 import store from '../store'
+import BinanceApi from './binance-api';
 
-const wsApi = new Api();
+const binanceApi = BinanceApi.create('wss://stream.binance.com:9443/ws/')
+                  .withCombinedBaseUrl('wss://stream.binance.com:9443/stream?streams=');
 
 const subscribeSymbol = function(symbol) {
-  wsApi.onTicker(symbol,(ticker) => {
+  binanceApi.onTicker(symbol,(ticker) => {
     const tick = {
       price: parseFloat(ticker.c),
       vol: parseFloat(ticker.q).toFixed(2),
@@ -20,13 +21,13 @@ const subscribeSymbol = function(symbol) {
   })
 };
 const unSubscribeSymbol = function(symbol) {
-  wsApi.closeSubscription('ticker',false, symbol)
+  binanceApi.closeSubscription('ticker',false, symbol)
 };
 
 const subscribeChart = function(symbol, interval) {
-  wsApi.onKline(symbol, interval, () => {})
+  binanceApi.onKline(symbol, interval, () => {})
 };
 const unSubscribeChart = function(symbol, interval) {
-  wsApi.closeSubscription('kline',false, symbol, interval)
+  binanceApi.closeSubscription('kline',false, symbol, interval)
 }
 export {subscribeSymbol, unSubscribeSymbol, subscribeChart, unSubscribeChart}
