@@ -3,7 +3,7 @@ function noop() {}
 export default function (url, opts) {
   opts = opts || {};
 
-  let k, ws, num, $={}, self=this;
+  let k, socket, num, $={}, self=this;
   let ms=opts.timeout || 1e3, max=opts.maxAttempts || Infinity;
 
   $.onmessage = opts.onmessage || noop;
@@ -25,8 +25,8 @@ export default function (url, opts) {
   };
 
   self.open = () => {
-    ws = new WebSocket(url, opts.protocols);
-    for (k in $) ws[k] = $[k];
+    socket = new WebSocket(url, opts.protocols);
+    for (k in $) socket[k] = $[k];
   };
 
   self.reconnect = e => {
@@ -37,7 +37,7 @@ export default function (url, opts) {
   };
 
   self.close = (x, y) => {
-    ws.close(x, y);
+    socket.close(x, y);
   };
 
   self.open(); // init
